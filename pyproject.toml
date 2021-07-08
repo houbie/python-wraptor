@@ -1,4 +1,4 @@
-[project]
+[tool.poetry]
 name = "wraptor"
 version = "0.1.0"
 description = "CLI wrapper for automatic installation of Python tooling"
@@ -8,6 +8,7 @@ authors = ["ihoubr <ivo@houbrechts-it.be>"]
 python = "^3.8"
 
 [tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
@@ -15,4 +16,15 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.wraptor]
 poetry = "poetry==1.1.7"
+flakehell = """
+black
+flake8
+flakehell
+flake8-bugbear
+pep8-naming
+flake8-isort
+flake8-pytest-style"""
 
+[tool.wraptor.alias]
+run = 'poetry run'
+test = 'poetry run pytest'

@@ -1,0 +1,24 @@
+[foo]
+
+[tool.wraptor]
+tool1 = "tool1 pip"
+tool2 = 'tool2 pip'
+
+tool3 = '''
+a
+b
+c'''
+
+tool4 = """
+d
+e
+"""
+
+'tool5' = "tool5 pip"
+"tool6" = "tool6 pip"
+
+[tool.wraptor.alias]
+run = 'tool1 start'
+test = 'tool2 run test'
+
+[bar]
