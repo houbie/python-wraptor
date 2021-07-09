@@ -30,68 +30,71 @@
 #                                                                                #
 # Licensed under the MIT license                                                 #
 ##################################################################################
-
 import hashlib
 import os
 import re
-import shutil
 import subprocess
-from pathlib import Path
-
 import sys
+from pathlib import Path
+from venv import EnvBuilder
 
-VERSION = '0.1.0'
+VERSION = "0.1.0"
 
 PYPROJECT = Path(__file__).with_name("pyproject.toml")
-CACHE_DIR = Path(os.environ.get("PYTHON_WRAPTOR_DIR", Path.home().joinpath('.python-wraptor')), 'cache')
-UPGRADE_ARG = '--upgrade'
-CLEAN_INSTALL_ARG = '--clean-install'
-VERSION_ARG = '--version'
-HELP = f"usage: pw [{UPGRADE_ARG}|{CLEAN_INSTALL_ARG}|{VERSION_ARG}] [command] [args]"
+VENVS_DIR = Path(os.environ.get("PYTHON_WRAPTOR_DIR", Path.home().joinpath(".python-wraptor")), "venvs")
+UPGRADE_ARG = "--upgrade"
+CLEAR_ARG = "--clear"
+VERSION_ARG = "--version"
+HELP = f"usage: pw [{UPGRADE_ARG}|{CLEAR_ARG}|{VERSION_ARG}] [command] [args]"
 
 
 def toml_aliases(file):
     if not file.exists():
         raise Warning("pyproject.toml not found")
-    with open(file, 'r') as file:
+    with open(file, "r") as file:
         toml = file.read()
-        match = re.search(r'\[\s*tool.wraptor.alias\s*]\s*([^\[]+)', toml, re.MULTILINE)
+        match = re.search(r"\[\s*tool.wraptor.alias\s*]\s*([^\[]+)", toml, re.MULTILINE)
         if match:
             alias_section = match.group(1)
-            matches = re.findall(fr'[\'"]?(\w+)[\'"]?\s*=\s*(\'{{3}}|"{{3}}|["\']{{1}})([^\'"][\s\S]+?)\2',
-                                 alias_section, re.MULTILINE)
+            matches = re.findall(
+                r'[\'"]?(\w+)[\'"]?\s*=\s*(\'{3}|"{3}|["\']{1})([^\'"][\s\S]+?)\2', alias_section, re.MULTILINE
+            )
             return {match[0]: match[2] for match in matches}
 
 
 def toml_wraptor_value(file, key):
     if not file.exists():
         raise Warning("pyproject.toml not found")
-    with open(file, 'r') as file:
+    with open(file, "r") as file:
         toml = file.read()
-        match = re.search(r'\[\s*tool.wraptor\s*]\s*([^\[]+)', toml, re.MULTILINE)
+        match = re.search(r"\[\s*tool.wraptor\s*]\s*([^\[]+)", toml, re.MULTILINE)
         if match:
             wraptor_section = match.group(1)
-            match = re.search(fr'[\'"]?{re.escape(key)}[\'"]?\s*=\s*(\'{{3}}|"{{3}}|["\']{{1}})([^\'"][\s\S]+?)\1',
-                              wraptor_section, re.MULTILINE)
+            match = re.search(
+                fr'[\'"]?{re.escape(key)}[\'"]?\s*=\s*(\'{{3}}|"{{3}}|["\']{{1}})([^\'"][\s\S]+?)\1',
+                wraptor_section,
+                re.MULTILINE,
+            )
             if match:
                 return match.group(2)
     raise Warning(f"{key} was not found under [tool.wraptor] in pyproject.toml")
 
 
-def install_tool(tool, cache_dir, upgrade=False, clean_install=False):
+def install_tool(tool, cache_dir, upgrade=False, clear=False):
     pip_args = toml_wraptor_value(PYPROJECT, tool)
     md5 = hashlib.md5()
-    md5.update(pip_args.encode())
-    install_dir = Path(cache_dir, md5.hexdigest()).absolute()
-    if install_dir.is_dir():
-        if clean_install:
-            shutil.rmtree(install_dir)
-        elif os.listdir(install_dir):
-            return install_dir
-    install_dir.mkdir(parents=True, exist_ok=True)
-    upgrade_option = '--upgrade' if upgrade else ''
-    print(f"installing {pip_args} ...")
-    subprocess.check_call(f"pip3 install {upgrade_option} {pip_args} -t {install_dir}".split())
+    md5.update(pip_args.strip().encode())
+    install_dir = Path(
+        cache_dir, f"{tool.lower()}-{md5.hexdigest()}-{sys.version_info.major}.{sys.version_info.minor}"
+    ).absolute()
+    if install_dir.joinpath("bin").is_dir() and not clear and not upgrade:
+        return install_dir
+    print(f"creating virtual environment for {tool} in {install_dir} ...")
+    EnvBuilder(clear=clear, with_pip=True).create(install_dir)
+    upgrade_option = "--upgrade" if upgrade else ""
+    print(f"installing with pip: {pip_args} ...")
+    pip = install_dir.joinpath("bin", "pip3")
+    subprocess.check_call(f"{pip} install {upgrade_option} {pip_args}".split())
     return install_dir
 
 
@@ -105,27 +108,28 @@ def parse_args(argv, aliases=None):
     upgrade = argv[1] == UPGRADE_ARG
     if upgrade:
         argv.remove(UPGRADE_ARG)
-    clean_install = argv[1] == CLEAN_INSTALL_ARG
-    if clean_install:
-        argv.remove(CLEAN_INSTALL_ARG)
+    clear = argv[1] == CLEAR_ARG
+    if clear:
+        argv.remove(CLEAR_ARG)
     cmd, args = argv[1], argv[2:]
+    tool = None
     if aliases and aliases.get(cmd):
-        expanded = aliases.get(cmd).split()
+        alias = aliases.get(cmd)
+        if ":" in alias:
+            tool, alias = re.split(r"\s*:\s*", alias)
+        expanded = alias.split()
         cmd = expanded[0]
         args = [*expanded[1:], *args]
-    return cmd, args, upgrade, clean_install
+    if not tool:
+        tool = cmd
+    return tool, cmd, args, upgrade, clear
 
 
 if __name__ == "__main__":
     try:
-        cmd, args, upgrade, clean_install = parse_args(sys.argv, toml_aliases(PYPROJECT))
-        tool_dir = install_tool(cmd, CACHE_DIR, upgrade=upgrade, clean_install=clean_install)
-        tool_env = os.environ.copy()
-        if tool_env.get("PYTHONPATH"):
-            tool_env["PYTHONPATH"] = os.pathsep.join((str(tool_dir), tool_env.get("PYTHONPATH")))
-        else:
-            tool_env["PYTHONPATH"] = str(tool_dir)
-        process_args = [Path(tool_dir, 'bin', cmd), *args]
-        subprocess.check_call(process_args, env=tool_env)
+        tool, cmd, args, upgrade, clear = parse_args(sys.argv, toml_aliases(PYPROJECT))
+        tool_dir = install_tool(tool, VENVS_DIR, upgrade=upgrade, clear=clear)
+        process_args = [Path(tool_dir, "bin", cmd), *args]
+        subprocess.check_call(process_args)
     except Warning as w:
         sys.exit(w)

@@ -20,5 +20,6 @@ e
 [tool.wraptor.alias]
 run = 'tool1 start'
 test = 'tool2 run test'
+sub_tool = 'tool1 : sub_tool default_arg'
 
 [bar]
