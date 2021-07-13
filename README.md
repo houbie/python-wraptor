@@ -1,17 +1,18 @@
 # Python wraptor
 
-__Alpha quality (requires additional testing on *nix and Windows support needs to be finished)__
+__Beta quality__
 
 CLI wrapper for automatic installation of Python tools:
 * Make it be a breeze for others to get started with your project
 * Get reproducible builds by always using the correct versions of your build tools
+* Plays well with build tools like [Poetry](https://python-poetry.org/) and [PDM](https://pdm.fming.dev/)
 
 ![velociraptor](docs/velociraptor.png)
 
 ## Installation
-Copy _pw_ and _pw.bat_ to your project's root folder and add it in version control.
+Copy _pw_ and _pw.bat_ to your project's root folder and add it under version control.
 
-Having _python3_ and _pip3_ (>= 3.6) available on your path is the only prerequisite.
+Having _python3_ (or _python_ on Windows) >= 3.6 and _pip3_ available on your path is the only prerequisite.
 
 ## Configuration
 Add the _tool.wraptor_ section inside _pyproject.toml_ in your project's root folder.
@@ -38,11 +39,11 @@ The _tool.wraptor.alias_ section can contain optional commandline aliases in the
 Example:
 ```toml
 [tool.wraptor.alias]
-# convenient shortcuts
+# convenience shortcuts
 run = "poetry run"
 test = "poetry run pytest"
 
-# isort is installed as part of flake8 in the tool.wraptor section
+# tell pw that the isort binary is installed as part of flake8 in the tool.wraptor section
 isort = "flake8:isort"
 ```
 
@@ -50,20 +51,28 @@ Each tool gets installed in an isolated virtual environment.
 
 These are all located in the user's platform-specific home directory under _.python-wraptor/venvs_.
 
-This can be modified by setting the `PYTHON_WRAPTOR_DIR` environment variable (f.e. on your CI/CD server).
+This location can be modified by setting the `PYTHON_WRAPTOR_VENVS_DIR` environment variable (f.e. on your CI/CD server).
 
 # Usage
 Add `path\to\pw` in front of the usual command line.
 
-Examples:
+Examples (on Windows you _may_ replace the forward slash with a backslash):
 ```shell
 ./pw poetry add -D pytest
 cd src
 ../pw black *.py
 ```
+pw specific options (they need to be specified immediately after `.\pw`):
+```shell
+# clear and re-install the virtual environment for a tool
+./pw --clear poetry install
 
-**TODO** Windows support
+# upgrade a tool with pip (has no effect if the tool is specified with a fixed version in pyproject.toml)
+./pw --upgrade black
 
+# display the pw version
+./pw --version
+```
 
 ## Why yet another tool when we already have pipx etc.?
 * As Python noob I had hard times setting up a project and building existing projects
@@ -77,4 +86,4 @@ cd src
   f.e. [Poetry](https://python-poetry.org/) and [PDM](https://pdm.fming.dev/)
 * Pin down the version of your build tool to prevent the
  "I only need to change one line of code, but the project doesn't build anymore" syndrome.
- Eventually your build tool wil get breaking changes.
+ Eventually the latest version of your build tool wil come with breaking changes.

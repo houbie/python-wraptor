@@ -42,7 +42,7 @@ import sys
 VERSION = "0.1.0"
 
 PYPROJECT = Path(__file__).with_name("pyproject.toml")
-VENVS_DIR = Path(os.environ.get("PYTHON_WRAPTOR_DIR", Path.home().joinpath(".python-wraptor")), "venvs")
+VENVS_DIR = Path(os.environ.get("PYTHON_WRAPTOR_VENVS_DIR", Path.home().joinpath(".python-wraptor")), "venvs")
 UPGRADE_ARG = "--upgrade"
 CLEAR_ARG = "--clear"
 VERSION_ARG = "--version"
