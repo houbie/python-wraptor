@@ -1,6 +1,6 @@
 # Python wraptor
 
-**Alpha quality (requires additional testing on *nix and Windows support needs to be finished)
+__Alpha quality (requires additional testing on *nix and Windows support needs to be finished)__
 
 CLI wrapper for automatic installation of Python tools:
 * Make it be a breeze for others to get started with your project
