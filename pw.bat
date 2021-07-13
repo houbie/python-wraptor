@@ -1,2 +1,2 @@
 @echo off
-python3 pw %*
+python pw %*
