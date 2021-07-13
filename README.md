@@ -1,5 +1,7 @@
 # Python wraptor
 
+**Alpha quality (requires additional testing on *nix and Windows support needs to be finished)
+
 CLI wrapper for automatic installation of Python tools:
 * Make it be a breeze for others to get started with your project
 * Get reproducible builds by always using the correct versions of your build tools
