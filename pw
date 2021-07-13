@@ -34,9 +34,10 @@ import hashlib
 import os
 import re
 import subprocess
-import sys
 from pathlib import Path
 from venv import EnvBuilder
+
+import sys
 
 VERSION = "0.1.0"
 
@@ -46,6 +47,7 @@ UPGRADE_ARG = "--upgrade"
 CLEAR_ARG = "--clear"
 VERSION_ARG = "--version"
 HELP = f"usage: pw [{UPGRADE_ARG}|{CLEAR_ARG}|{VERSION_ARG}] [command] [args]"
+BIN_DIR = "Scripts" if os.name == "nt" else "bin"
 
 
 def toml_aliases(file):
@@ -87,13 +89,13 @@ def install_tool(tool, cache_dir, upgrade=False, clear=False):
     install_dir = Path(
         cache_dir, f"{tool.lower()}-{md5.hexdigest()}-{sys.version_info.major}.{sys.version_info.minor}"
     ).absolute()
-    if install_dir.joinpath("bin").is_dir() and not clear and not upgrade:
+    if install_dir.joinpath(BIN_DIR).is_dir() and not clear and not upgrade:
         return install_dir
     print(f"creating virtual environment for {tool} in {install_dir} ...")
     EnvBuilder(clear=clear, with_pip=True).create(install_dir)
     upgrade_option = "--upgrade" if upgrade else ""
     print(f"installing with pip: {pip_args} ...")
-    pip = install_dir.joinpath("bin", "pip3")
+    pip = install_dir.joinpath(BIN_DIR, "pip3")
     subprocess.check_call(f"{pip} install {upgrade_option} {pip_args}".split())
     return install_dir
 
