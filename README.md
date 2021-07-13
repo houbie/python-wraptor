@@ -60,12 +60,8 @@ cd src
 ../pw black *.py
 ```
 
-Or in Windows:
-```shell
-pw poetry add -D pytest
-cd src
-..\pw black *.py
-```
+**TODO** Windows support
+
 
 ## Why yet another tool when we already have pipx etc.?
 * As Python noob I had hard times setting up a project and building existing projects
