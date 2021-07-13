@@ -11,7 +11,7 @@ CLI wrapper for automatic installation of Python tools:
 ## Installation
 Copy _pw_ and _pw.bat_ to your project's root folder and add it in version control.
 
-Having _python3_ and _pip3_ (> 3.6) available on your path is the only prerequisite.
+Having _python3_ and _pip3_ (>= 3.6) available on your path is the only prerequisite.
 
 ## Configuration
 Add the _tool.wraptor_ section inside _pyproject.toml_ in your project's root folder.

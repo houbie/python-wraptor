@@ -131,7 +131,7 @@ if __name__ == "__main__":
     try:
         tool, cmd, args, upgrade, clear = parse_args(sys.argv, toml_aliases(PYPROJECT))
         tool_dir = install_tool(tool, VENVS_DIR, upgrade=upgrade, clear=clear)
-        process_args = [Path(tool_dir, BIN_DIR, cmd), *args]
+        process_args = [str(Path(tool_dir, BIN_DIR, cmd)), *args]
         subprocess.check_call(process_args)
     except Warning as w:
         sys.exit(w)
