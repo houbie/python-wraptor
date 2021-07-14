@@ -1,7 +1,5 @@
 # Python wraptor
 
-__Beta quality__
-
 CLI wrapper for automatic installation of Python tools:
 * Make it be a breeze for others to get started with your project
 * Get reproducible builds by always using the correct versions of your build tools
@@ -10,6 +8,10 @@ CLI wrapper for automatic installation of Python tools:
 ![velociraptor](docs/velociraptor.png)
 
 ## Installation
+No tools to install 😍
+
+![Cast](./docs/poetry-build-cast.svg)
+
 Copy _pw_ and _pw.bat_ to your project's root folder and add it under version control.
 
 Having _python3_ (or _python_ on Windows) >= 3.6 and _pip3_ available on your path is the only prerequisite.
@@ -86,4 +88,9 @@ pw specific options (they need to be specified immediately after `.\pw`):
   f.e. [Poetry](https://python-poetry.org/) and [PDM](https://pdm.fming.dev/)
 * Pin down the version of your build tool to prevent the
  "I only need to change one line of code, but the project doesn't build anymore" syndrome.
- Eventually the latest version of your build tool wil come with breaking changes.
+ Eventually they will release a new version of the build tool with breaking changes.
+* There is a category of tools that you don't want to version: tools that interact with changing environments
+  like AWS. You probably want to update the AWS CLI f.e. on a regular basis by running `./pw --upgrade aws`.
+
+## Examples
+* [Facebook's PathPicker fork](https://github.com/houbie/PathPicker) with Poetry
