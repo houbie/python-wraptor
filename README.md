@@ -18,7 +18,10 @@ Having _python3_ (or _python_ on Windows) >= 3.6 and _pip3_ available on your pa
 
 ## Configuration
 Add the _tool.wraptor_ section inside _pyproject.toml_ in your project's root folder.
-Each entry has the form `tool = "pip install arguments"`
+
+Each entry has the form 
+
+`tool = "pip install arguments"`
 
 Example:
 ```toml
@@ -36,7 +39,9 @@ flake8-isort
 flake8-pytest-style"""
 ```
 
-The _tool.wraptor.alias_ section can contain optional commandline aliases in the form `alias = [tool_key:] command`
+The _tool.wraptor.alias_ section can contain optional commandline aliases in the form
+
+`alias = [tool_key:] command`
 
 Example:
 ```toml
