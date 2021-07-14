@@ -50,7 +50,7 @@ Example:
 run = "poetry run"
 test = "poetry run pytest"
 
-# tell pw that the isort binary is installed as part of flake8 in the tool.wraptor section
+# tell pw that the isort binary is installed as part of flake8
 isort = "flake8:isort"
 ```
 
@@ -72,10 +72,10 @@ cd src
 pw specific options (they need to be specified immediately after `.\pw`):
 ```shell
 # clear and re-install the virtual environment for a tool
-./pw --clear poetry install
+./pw --clear poetry add requests
 
 # upgrade a tool with pip (has no effect if the tool is specified with a fixed version in pyproject.toml)
-./pw --upgrade black
+./pw --upgrade black *.py
 
 # display the pw version
 ./pw --version
