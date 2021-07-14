@@ -93,10 +93,13 @@ def install_tool(tool, cache_dir, upgrade=False, clear=False):
         return install_dir
     print(f"creating virtual environment for {tool} in {install_dir} ...")
     EnvBuilder(clear=clear, with_pip=True).create(install_dir)
-    upgrade_option = "--upgrade" if upgrade else ""
     print(f"installing with pip: {pip_args} ...")
     pip = install_dir.joinpath(BIN_DIR, "pip3")
-    subprocess.check_call(f"{pip} install {upgrade_option} {pip_args}".split())
+    process_args = [str(pip), "install"]
+    if upgrade:
+        process_args.append("--upgrade")
+    process_args += pip_args.split()
+    subprocess.check_call(process_args)
     return install_dir
 
 

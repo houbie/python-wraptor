@@ -23,13 +23,11 @@ flake8-bugbear
 pep8-naming
 flake8-isort
 flake8-pytest-style"""
-asciinema = "asciinema"
 
 [tool.wraptor.alias]
 run = "poetry run"
 test = "poetry run pytest"
 isort = "flake8:isort"
-record = "ascinema rec docs shocase"
 
 [tool.black]
 line-length = 120
