@@ -1,27 +1,27 @@
 # Python wraptor
 
 CLI wrapper for automatic installation of Python tools:
-* Make it be a breeze for others to get started with your project
+* Make it be a breeze for others to get started with your project or tutorial
 * Get reproducible builds by always using the correct versions of your build tools
-* Plays well with build tools like [Poetry](https://python-poetry.org/) and [PDM](https://pdm.fming.dev/)
+* Plays well with build tools like [Poetry](https://python-poetry.org/)
 
 ![velociraptor](docs/velociraptor.png)
 
 ## Installation
-No tools to install 😍
+No tools to install (besides Python 3) 😍
 
 ![Cast](./docs/poetry-build-cast.svg)
 
-Copy _pw_ and _pw.bat_ to your project's root folder and add it under version control.
+Copy _pw_ and _pw.bat_ to your project's root directory and add it under version control.
 
-Having _python3_ (or _python_ on Windows) >= 3.6 and _pip3_ available on your path is the only prerequisite.
+_python3_ (or _python_ on Windows) >= 3.6 and _pip3_ must be available on your path.
 
 ## Configuration
-Add the _tool.wraptor_ section inside _pyproject.toml_ in your project's root folder.
+Add the _tool.wraptor_ section inside _pyproject.toml_ in your project's root directory.
 
 Each entry has the form 
 
-`tool = "pip install arguments"`
+`tool = "pip-install-arguments"`
 
 Example:
 ```toml
@@ -81,6 +81,21 @@ pw specific options (they need to be specified immediately after `.\pw`):
 ./pw --version
 ```
 
+## Bonus
+If you want to avoid typing `./pw` (or `../pw` when in a subdirectory), you can copy the _px_ script to a
+location on your PATH (f.e. _/usr/local/bin_). From then on, you can replace _pw_ with _px_ and invoke it
+from any (sub)directory containing the _pw_ script.
+```shell
+cd my-pw-project
+px test
+cd tests
+px test sometest.py
+```
+
+## Uninstall / cleaning up
+To clean up everything that was installed via the Python Wraptor, just delete the _.python-wraptor_ directory
+in your home directory
+
 ## Why yet another tool when we already have pipx etc.?
 * As Python noob I had hard times setting up a project and building existing projects
 * There is always someone in the team having issues with his setup, either with a specific tool, with Homebrew, pipx, ...
@@ -90,12 +105,19 @@ pw specific options (they need to be specified immediately after `.\pw`):
 ## Best practices
 * Separate your tools from your project dependencies
 * Use a build tool with decent dependency management that locks all dependencies, 
-  f.e. [Poetry](https://python-poetry.org/) and [PDM](https://pdm.fming.dev/)
-* Pin down the version of your build tool to prevent the
- "I only need to change one line of code, but the project doesn't build anymore" syndrome.
- Eventually they will release a new version of the build tool with breaking changes.
-* There is a category of tools that you don't want to version: tools that interact with changing environments
-  like AWS. You probably want to update the AWS CLI f.e. on a regular basis by running `./pw --upgrade aws`.
+  f.e. [Poetry](https://python-poetry.org/) or [PDM](https://pdm.fming.dev/)
+* Pin down the version of your build tool to prevent the "project doesn't build anymore" syndrome.
+ Eventually a new version of the build tool with breaking changes will be released.
+* There is a category of tools that you don't want to version: tools that interact with changing environments.
+  You probably want to update those on a regular basis by running `./pw --upgrade my-evolving-tool`.
 
 ## Examples
-* [Facebook's PathPicker fork](https://github.com/houbie/PathPicker) with Poetry
+* This project (using Poetry)
+* [Wraptor examples](https://github.com/houbie/wrapped-pi)
+* [Facebook's PathPicker fork](https://github.com/houbie/PathPicker) (using Poetry)
+
+## TODO
+* allow quoted strings in command arguments
+* display available tools and aliases as part of the help message
+* px script for Windows
+* init script that copies the pw scripts and initializes pyproject.toml + publish to PyPi
