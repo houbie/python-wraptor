@@ -21,5 +21,6 @@ e
 run = 'tool1 start'
 test = 'tool2 run test'
 sub_tool = 'tool1 : sub_tool default_arg'
+sub_tool2_alias = 'tool2 : sub_tool2 default:arg'
 
 [bar]

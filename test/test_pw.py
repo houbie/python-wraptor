@@ -26,6 +26,7 @@ def test_toml_aliases():
         "run": "tool1 start",
         "test": "tool2 run test",
         "sub_tool": "tool1 : sub_tool default_arg",
+        "sub_tool2_alias": "tool2 : sub_tool2 default:arg",
     }
 
 
@@ -82,4 +83,11 @@ def test_parse_args_with_alias():
     assert cmd == "sub_tool"
     assert args == ["default_arg", "arg1", "arg2"]
     assert upgrade
+    assert not clear
+
+    tool, cmd, args, upgrade, clear = pw.parse_args(["pw", "sub_tool2_alias", "arg1", "arg2"], aliases)
+    assert tool == "tool2"
+    assert cmd == "sub_tool2"
+    assert args == ["default:arg", "arg1", "arg2"]
+    assert not upgrade
     assert not clear
