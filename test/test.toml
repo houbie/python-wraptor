@@ -2,7 +2,7 @@
 
 [tool.wraptor]
 tool1 = "tool1 pip"
-tool2 = 'tool2 pip'
+tool-2 = 'tool2 pip'
 
 tool3 = '''
 a
@@ -21,6 +21,6 @@ e
 run = 'tool1 start'
 test = 'tool2 run test'
 sub_tool = 'tool1 : sub_tool default_arg'
-sub_tool2_alias = 'tool2 : sub_tool2 default:arg'
+sub-tool-2-alias = 'tool-2 : sub-tool-2 default:arg'
 
 [bar]

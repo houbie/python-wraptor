@@ -13,7 +13,7 @@ spec.loader.exec_module(pw)
 def test_toml_wraptor_value():
     toml = Path(__file__).with_name("test.toml")
     assert pw.toml_wraptor_value(toml, "tool1") == "tool1 pip"
-    assert pw.toml_wraptor_value(toml, "tool2") == "tool2 pip"
+    assert pw.toml_wraptor_value(toml, "tool-2") == "tool2 pip"
     assert pw.toml_wraptor_value(toml, "tool3").split() == ["a", "b", "c"]
     assert pw.toml_wraptor_value(toml, "tool4").split() == ["d", "e"]
     assert pw.toml_wraptor_value(toml, "tool5") == "tool5 pip"
@@ -26,7 +26,7 @@ def test_toml_aliases():
         "run": "tool1 start",
         "test": "tool2 run test",
         "sub_tool": "tool1 : sub_tool default_arg",
-        "sub_tool2_alias": "tool2 : sub_tool2 default:arg",
+        "sub-tool-2-alias": "tool-2 : sub-tool-2 default:arg",
     }
 
 
@@ -85,9 +85,9 @@ def test_parse_args_with_alias():
     assert upgrade
     assert not clear
 
-    tool, cmd, args, upgrade, clear = pw.parse_args(["pw", "sub_tool2_alias", "arg1", "arg2"], aliases)
-    assert tool == "tool2"
-    assert cmd == "sub_tool2"
+    tool, cmd, args, upgrade, clear = pw.parse_args(["pw", "sub-tool-2-alias", "arg1", "arg2"], aliases)
+    assert tool == "tool-2"
+    assert cmd == "sub-tool-2"
     assert args == ["default:arg", "arg1", "arg2"]
     assert not upgrade
     assert not clear

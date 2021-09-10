@@ -39,7 +39,7 @@ from venv import EnvBuilder
 
 import sys
 
-VERSION = "1.0.0"
+VERSION = "1.0.1"
 
 PYPROJECT = Path(__file__).with_name("pyproject.toml")
 VENVS_DIR = Path(os.environ.get("PYTHON_WRAPTOR_VENVS_DIR", Path.home().joinpath(".python-wraptor")), "venvs")
@@ -59,7 +59,7 @@ def toml_aliases(file):
         if match:
             alias_section = match.group(1)
             matches = re.findall(
-                r'[\'"]?(\w+)[\'"]?\s*=\s*(\'{3}|"{3}|["\']{1})([^\'"][\s\S]+?)\2', alias_section, re.MULTILINE
+                r'[\'"]?([\w|-]+)[\'"]?\s*=\s*(\'{3}|"{3}|["\']{1})([^\'"][\s\S]+?)\2', alias_section, re.MULTILINE
             )
             return {match[0]: match[2] for match in matches}
 
@@ -120,7 +120,7 @@ def parse_args(argv, aliases=None):
     tool = None
     if aliases and aliases.get(cmd):
         alias = aliases.get(cmd)
-        if re.match(r'^\w+\s*:\s*', alias):
+        if re.match(r'^[\w|-]+\s*:\s*', alias):
             tool, alias = re.split(r"\s*:\s*", alias, maxsplit=1)
         expanded = alias.split()
         cmd = expanded[0]
