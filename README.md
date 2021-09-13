@@ -83,8 +83,9 @@ pw specific options (they need to be specified immediately after `.\pw`):
 
 ## Bonus
 If you want to avoid typing `./pw` (or `../pw` when in a subdirectory), you can copy the _px_ script to a
-location on your PATH (f.e. _/usr/local/bin_). From then on, you can replace _pw_ with _px_ and invoke it
-from any (sub)directory containing the _pw_ script.
+location on your PATH (f.e. _/usr/local/bin_, or create a symlink with `ln -fs $(pwd)/px /usr/local/bin/px`).
+
+From then on, you can replace _pw_ with _px_ and invoke it from any (sub)directory containing the _pw_ script.
 ```shell
 cd my-pw-project
 px test
