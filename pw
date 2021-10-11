@@ -34,12 +34,11 @@ import hashlib
 import os
 import re
 import subprocess
+import sys
 from pathlib import Path
 from venv import EnvBuilder
 
-import sys
-
-VERSION = "1.0.1"
+VERSION = "1.0.2"
 
 PYPROJECT = Path(__file__).with_name("pyproject.toml")
 VENVS_DIR = Path(os.environ.get("PYTHON_WRAPTOR_VENVS_DIR", Path.home().joinpath(".python-wraptor")), "venvs")
@@ -91,15 +90,15 @@ def install_tool(tool, cache_dir, upgrade=False, clear=False):
     ).absolute()
     if install_dir.joinpath(BIN_DIR).is_dir() and not clear and not upgrade:
         return install_dir
-    print(f"creating virtual environment for {tool} in {install_dir} ...")
+    sys.stderr.write(f"creating virtual environment for {tool} in {install_dir} ...\n")
     EnvBuilder(clear=clear, with_pip=True).create(install_dir)
-    print(f"installing with pip: {pip_args} ...")
+    sys.stderr.write(f"installing with pip: {pip_args} ...\n")
     pip = install_dir.joinpath(BIN_DIR, "pip3")
     process_args = [str(pip), "install"]
     if upgrade:
         process_args.append("--upgrade")
     process_args += pip_args.split()
-    subprocess.check_call(process_args)
+    subprocess.check_call(process_args, stdout=subprocess.DEVNULL)
     return install_dir
 
 
@@ -120,7 +119,7 @@ def parse_args(argv, aliases=None):
     tool = None
     if aliases and aliases.get(cmd):
         alias = aliases.get(cmd)
-        if re.match(r'^[\w|-]+\s*:\s*', alias):
+        if re.match(r"^[\w|-]+\s*:\s*", alias):
             tool, alias = re.split(r"\s*:\s*", alias, maxsplit=1)
         expanded = alias.split()
         cmd = expanded[0]
