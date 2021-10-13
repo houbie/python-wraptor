@@ -44,5 +44,5 @@ check-pylint = "poetry run pylint pw tests"
 check = "&: test check-pylint"
 build = "&: install check"
 
-git-push = "!: git pushstatus"
+git-push = "!: git push"
 release = "&: build git-push"
