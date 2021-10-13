@@ -38,7 +38,7 @@ import sys
 from pathlib import Path
 from venv import EnvBuilder
 
-VERSION = "1.0.3"
+VERSION = "1.1.0"
 
 PYPROJECT = Path(__file__).with_name("pyproject.toml")
 VENVS_DIR = Path(os.environ.get("PYTHON_WRAPTOR_VENVS_DIR", Path.home().joinpath(".python-wraptor")), "venvs")
@@ -47,6 +47,8 @@ CLEAR_ARG = "--clear"
 VERSION_ARG = "--version"
 HELP = f"usage: pw [{UPGRADE_ARG}|{CLEAR_ARG}|{VERSION_ARG}] [command] [args]"
 BIN_DIR = "Scripts" if os.name == "nt" else "bin"
+SHELL = "!"
+COLON_RE = r"\s*:\s*"
 
 
 def toml_aliases(toml):
@@ -103,6 +105,33 @@ def install_tool(tool, cache_dir, upgrade=False, clear=False):
     return install_dir
 
 
+def parse_alias(cmd, args, aliases):
+    tool = None
+    alias = aliases.get(cmd)
+
+    if re.match(r"^&\s*:\s*", alias):
+        aliases_to_invoke = re.split(COLON_RE, alias, maxsplit=1)[1].split()
+        result = []
+        for a in aliases_to_invoke:
+            result += parse_alias(a, [], aliases)
+        return result
+
+    if re.match(r"^[\w|-]+\s*:\s*", alias):
+        tool, alias = re.split(COLON_RE, alias, maxsplit=1)
+
+    if re.match(r"^!\s*:\s*", alias):
+        tool = SHELL
+        alias_parts = re.split(COLON_RE, alias, maxsplit=1)[1].split()
+    else:
+        alias_parts = alias.split()
+
+    cmd = alias_parts[0]
+    args = [*alias_parts[1:], *args]
+    if not tool:
+        tool = cmd
+    return [(tool, cmd, args)]
+
+
 def parse_args(argv, aliases=None):
     if len(argv) < 2:
         raise Warning(HELP)
@@ -117,24 +146,23 @@ def parse_args(argv, aliases=None):
     if clear:
         argv.remove(CLEAR_ARG)
     cmd, args = argv[1], argv[2:]
-    tool = None
     if aliases and aliases.get(cmd):
-        alias = aliases.get(cmd)
-        if re.match(r"^[\w|-]+\s*:\s*", alias):
-            tool, alias = re.split(r"\s*:\s*", alias, maxsplit=1)
-        expanded = alias.split()
-        cmd = expanded[0]
-        args = [*expanded[1:], *args]
-    if not tool:
-        tool = cmd
-    return tool, cmd, args, upgrade, clear
+        calls = parse_alias(cmd, args, aliases)
+    else:
+        calls = [(cmd, cmd, args)]
+
+    return calls, upgrade, clear
 
 
 if __name__ == "__main__":
     try:
-        _tool, _cmd, _args, _upgrade, _clear = parse_args(sys.argv, toml_aliases(PYPROJECT))
-        _tool_dir = install_tool(_tool, VENVS_DIR, upgrade=_upgrade, clear=_clear)
-        _process_args = [str(Path(_tool_dir, BIN_DIR, _cmd)), *_args]
-        subprocess.check_call(_process_args)
+        _calls, _upgrade, _clear = parse_args(sys.argv, toml_aliases(PYPROJECT))
+        for _tool, _cmd, _args in _calls:
+            if _tool == SHELL:
+                _process_args = [_cmd, *_args]
+            else:
+                _tool_dir = install_tool(_tool, VENVS_DIR, upgrade=_upgrade, clear=_clear)
+                _process_args = [str(Path(_tool_dir, BIN_DIR, _cmd)), *_args]
+            subprocess.check_call(_process_args)
     except Warning as w:
         sys.exit(w)

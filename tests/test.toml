@@ -23,4 +23,9 @@ test = 'tool2 run test'
 sub_tool = 'tool1 : sub_tool default_arg'
 sub-tool-2-alias = 'tool-2 : sub-tool-2 default:arg'
 
+combined-alias = '& : run test'
+all-aliases = '& : combined-alias sub_tool sub-tool-2-alias shell-command'
+
+shell-command = "!: ls -al"
+
 [bar]

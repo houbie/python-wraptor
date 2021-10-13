@@ -43,6 +43,7 @@ The _tool.wraptor.alias_ section can contain optional commandline aliases in the
 
 `alias = [tool_key:] command`
 
+
 Example:
 ```toml
 [tool.wraptor.alias]
@@ -52,6 +53,19 @@ test = "poetry run pytest"
 
 # tell pw that the isort binary is installed as part of flake8
 isort = "flake8:isort"
+```
+
+The  _tool.wraptor.alias_ section can also contain shell commands (prefixed with _!:_)
+and combinations of other aliases (prefixed with _&:_):
+```toml
+[tool.wraptor.alias]
+test = "poetry run pytest"
+check-pylint = "poetry run pylint pw tests"
+check = "&: test check-pylint"
+push = "!: git push"
+
+# push to git if all checks pass
+release = "&: check push"
 ```
 
 Each tool gets installed in an isolated virtual environment.

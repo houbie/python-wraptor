@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wraptor"
-version = "1.0.3"
+version = "1.1.0"
 description = "CLI wrapper for automatic installation of Python tooling"
 authors = ["Houbie <ivo@houbrechts-it.be>"]
 
@@ -24,6 +24,7 @@ profile = "black"
 
 [tool.pylint.format]
 max-line-length = 120
+variable-rgx = '^[a-z_][a-z0-9_]*$'
 [tool.pylint.messages_control]
 disable = [
     "missing-docstring",
@@ -36,5 +37,12 @@ pre-commit = "pre-commit"
 
 [tool.wraptor.alias]
 run = "poetry run"
+install = "poetry install"
 test = "poetry run pytest"
 check-pylint = "poetry run pylint pw tests"
+
+check = "&: test check-pylint"
+build = "&: install check"
+
+git-push = "!: git pushstatus"
+release = "&: build git-push"
