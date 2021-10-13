@@ -38,7 +38,7 @@ import sys
 from pathlib import Path
 from venv import EnvBuilder
 
-VERSION = "1.0.2"
+VERSION = "1.0.3"
 
 PYPROJECT = Path(__file__).with_name("pyproject.toml")
 VENVS_DIR = Path(os.environ.get("PYTHON_WRAPTOR_VENVS_DIR", Path.home().joinpath(".python-wraptor")), "venvs")
