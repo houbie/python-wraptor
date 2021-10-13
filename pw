@@ -49,10 +49,10 @@ HELP = f"usage: pw [{UPGRADE_ARG}|{CLEAR_ARG}|{VERSION_ARG}] [command] [args]"
 BIN_DIR = "Scripts" if os.name == "nt" else "bin"
 
 
-def toml_aliases(file):
-    if not file.exists():
+def toml_aliases(toml):
+    if not toml.exists():
         raise Warning("pyproject.toml not found")
-    with open(file, "r") as file:
+    with open(toml, "r") as file:
         toml = file.read()
         match = re.search(r"\[\s*tool.wraptor.alias\s*]\s*([^\[]+)", toml, re.MULTILINE)
         if match:
@@ -61,12 +61,13 @@ def toml_aliases(file):
                 r'[\'"]?([\w|-]+)[\'"]?\s*=\s*(\'{3}|"{3}|["\']{1})([^\'"][\s\S]+?)\2', alias_section, re.MULTILINE
             )
             return {match[0]: match[2] for match in matches}
+        return {}
 
 
-def toml_wraptor_value(file, key):
-    if not file.exists():
+def toml_wraptor_value(toml, key):
+    if not toml.exists():
         raise Warning("pyproject.toml not found")
-    with open(file, "r") as file:
+    with open(toml, "r") as file:
         toml = file.read()
         match = re.search(r"\[\s*tool.wraptor\s*]\s*([^\[]+)", toml, re.MULTILINE)
         if match:
@@ -131,9 +132,9 @@ def parse_args(argv, aliases=None):
 
 if __name__ == "__main__":
     try:
-        tool, cmd, args, upgrade, clear = parse_args(sys.argv, toml_aliases(PYPROJECT))
-        tool_dir = install_tool(tool, VENVS_DIR, upgrade=upgrade, clear=clear)
-        process_args = [str(Path(tool_dir, BIN_DIR, cmd)), *args]
-        subprocess.check_call(process_args)
+        _tool, _cmd, _args, _upgrade, _clear = parse_args(sys.argv, toml_aliases(PYPROJECT))
+        _tool_dir = install_tool(_tool, VENVS_DIR, upgrade=_upgrade, clear=_clear)
+        _process_args = [str(Path(_tool_dir, BIN_DIR, _cmd)), *_args]
+        subprocess.check_call(_process_args)
     except Warning as w:
         sys.exit(w)

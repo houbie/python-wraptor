@@ -19,7 +19,7 @@ _python3_ (or _python_ on Windows) >= 3.6 and _pip3_ must be available on your p
 ## Configuration
 Add the _tool.wraptor_ section inside _pyproject.toml_ in your project's root directory.
 
-Each entry has the form 
+Each entry has the form
 
 `tool = "pip-install-arguments"`
 
@@ -105,7 +105,7 @@ in your home directory
 
 ## Best practices
 * Separate your tools from your project dependencies
-* Use a build tool with decent dependency management that locks all dependencies, 
+* Use a build tool with decent dependency management that locks all dependencies,
   f.e. [Poetry](https://python-poetry.org/) or [PDM](https://pdm.fming.dev/)
 * Pin down the version of your build tool to prevent the "project doesn't build anymore" syndrome.
  Eventually a new version of the build tool with breaking changes will be released.

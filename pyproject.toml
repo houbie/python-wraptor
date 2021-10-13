@@ -1,33 +1,40 @@
 [tool.poetry]
 name = "wraptor"
-version = "0.1.0"
+version = "1.0.0"
 description = "CLI wrapper for automatic installation of Python tooling"
 authors = ["Houbie <ivo@houbrechts-it.be>"]
 
 [tool.poetry.dependencies]
-python = ">=3.6"
+python = ">=3.6, <4.0"
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.2.4"
+pytest = "^6.2.5"
+# idealy pylint should not be in here, but it is required by the intellij plugin
+pylint = "^2.11.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.black]
+line-length = 120
+
+[tool.isort]
+profile = "black"
+
+[tool.pylint.format]
+max-line-length = 120
+[tool.pylint.messages_control]
+disable = [
+    "missing-docstring",
+    "unspecified-encoding"
+]
 [tool.wraptor]
-poetry = "poetry==1.1.7"
-black = "black"
-flake8 = """
-flake8
-flake8-bugbear
-pep8-naming
-flake8-isort
-flake8-pytest-style"""
+poetry = "poetry==1.1.11"
+black = "black==21.9b0"
+pre-commit = "pre-commit"
 
 [tool.wraptor.alias]
 run = "poetry run"
 test = "poetry run pytest"
-isort = "flake8:isort"
-
-[tool.black]
-line-length = 120
+check-pylint = "poetry run pylint pw tests"
