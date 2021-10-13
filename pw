@@ -101,7 +101,8 @@ def install_tool(tool, cache_dir, upgrade=False, clear=False):
     if upgrade:
         process_args.append("--upgrade")
     process_args += pip_args.split()
-    subprocess.check_call(process_args, stdout=subprocess.DEVNULL)
+    with open(os.devnull, 'w') as devnull:
+        subprocess.check_call(process_args, stdout=devnull)
     return install_dir
 
 
