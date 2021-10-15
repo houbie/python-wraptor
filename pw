@@ -93,8 +93,13 @@ def ensure_tool(tool, cache_dir, upgrade=False, clear=False):
         return install_dir
     sys.stderr.write(f"creating virtual environment for {tool} in {install_dir} ...\n")
     EnvBuilder(clear=clear, with_pip=True).create(install_dir)
+    subprocess.run(
+        f"{install_dir.joinpath(BIN_DIR, 'python')} -m pip install --upgrade pip",
+        shell=True,
+        stdout=sys.stderr,
+        check=True,
+    )
     pip = install_dir.joinpath(BIN_DIR, "pip3")
-    subprocess.run(f"{pip} install --upgrade pip", shell=True, stdout=sys.stderr, check=True)
     sys.stderr.write(f"installing with pip: {pip_args} ...\n")
     shell_cmd = f"{pip} install "
     shell_cmd += pip_args
