@@ -36,7 +36,7 @@ black = "black==21.9b0"
 pre-commit = "pre-commit"
 
 [tool.wraptor.alias]
-clean-install = "rm -rf .venv && rm -rf .pytest_cache && ./pw poetry install --pw-clear-all"
+clean-install = "rm -rf .venv && rm -rf .pytest_cache && ./pw poetry install --pw-clear-all && ./pw pre-commit install"
 install = "poetry install"
 test = "poetry run pytest"
 check-pylint = "poetry run pylint pw tests"
