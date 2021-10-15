@@ -114,6 +114,7 @@ def parse_args(argv, toml, aliases=None):
         print(f"Clearing Python Wraptor cache in {VENVS_DIR}...", file=sys.stderr)
         shutil.rmtree(VENVS_DIR, ignore_errors=True)
         argv.remove(CLEAR_ALL_ARG)
+
     if len(argv) < 2:
         raise Warning(HELP)
 
