@@ -110,13 +110,12 @@ def ensure_tool(tool, cache_dir, upgrade=False, clear=False):
 
 
 def parse_args(argv, toml, aliases=None):
-    if len(argv) < 2:
-        raise Warning(HELP)
-
     if CLEAR_ALL_ARG in argv:
         print(f"Clearing Python Wraptor cache in {VENVS_DIR}...", file=sys.stderr)
-        shutil.rmtree(VENVS_DIR)
+        shutil.rmtree(VENVS_DIR, ignore_errors=True)
         argv.remove(CLEAR_ALL_ARG)
+    if len(argv) < 2:
+        raise Warning(HELP)
 
     clear = upgrade = False
     if CLEAR_ARG in argv:

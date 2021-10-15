@@ -53,16 +53,12 @@ test = "poetry run pytest"
 
 # tell pw that the isort binary is installed as part of flake8
 isort = "flake8:isort"
-```
 
-The  _tool.wraptor.alias_ section can also contain shell commands (prefixed with _!:_)
-and combinations of other aliases (prefixed with _&:_):
-```toml
-[tool.wraptor.alias]
-test = "poetry run pytest"
-check-pylint = "poetry run pylint pw tests"
-check = "&: test check-pylint"
-push = "!: git push"
+# simple shell commands
+clean = "rm -f .coverage && rm -rf .pytest_cache"
+
+# when combining multiple wraptor aliases, prefix them with ./pw
+check-pylint = "./pw poetry run pylint && ./pw tests"
 
 # push to git if all checks pass
 release = "&: check push"
@@ -83,16 +79,17 @@ Examples (on Windows you _may_ replace the forward slash with a backslash):
 cd src
 ../pw black *.py
 ```
-pw specific options (they need to be specified immediately after `.\pw`):
+
+_pw_ specific options:
 ```shell
-# clear and re-install the virtual environment for a tool
-./pw --clear poetry
-
 # upgrade a tool with pip (has no effect if the tool is specified with a fixed version in pyproject.toml)
-./pw --upgrade black
+./pw --pw-upgrade black
 
-# display the pw version
-./pw --version
+# clear and re-install the virtual environment for a tool
+./pw --pw-clear poetry
+
+# clear the complete wraptor cache
+./pw --pw-clear-all poetry
 ```
 
 ## Bonus
@@ -109,7 +106,7 @@ px test sometest.py
 
 ## Uninstall / cleaning up
 To clean up everything that was installed via the Python Wraptor, just delete the _.python-wraptor_ directory
-in your home directory
+in your home directory or run `./pw --pw-clear-all`
 
 ## Why yet another tool when we already have pipx etc.?
 * As Python noob I had hard times setting up a project and building existing projects
