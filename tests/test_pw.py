@@ -14,8 +14,8 @@ def test_toml_wraptor_value():
     toml = Path(__file__).with_name("test.toml")
     assert pw.toml_wraptor_value(toml, "tool1") == "tool1 pip"
     assert pw.toml_wraptor_value(toml, "tool-2") == "tool2 pip"
-    assert pw.toml_wraptor_value(toml, "tool3").split() == ["a", "b", "c"]
-    assert pw.toml_wraptor_value(toml, "tool4").split() == ["d", "e"]
+    assert pw.toml_wraptor_value(toml, "tool3") == "a b c"
+    assert pw.toml_wraptor_value(toml, "tool4") == "d e"
     assert pw.toml_wraptor_value(toml, "tool5") == "tool5 pip"
     assert pw.toml_wraptor_value(toml, "tool6") == "tool6 pip"
     assert pw.toml_wraptor_value(toml, "xxx") is None

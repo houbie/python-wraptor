@@ -76,7 +76,7 @@ def toml_wraptor_value(toml, key):
         re.MULTILINE,
     )
     if match:
-        return match.group(2)
+        return " ".join(match.group(2).split())
     return None
 
 
