@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wraptor"
-version = "1.1.0"
+version = "2.0.0"
 description = "CLI wrapper for automatic installation of Python tooling"
 authors = ["Houbie <ivo@houbrechts-it.be>"]
 
@@ -36,13 +36,11 @@ black = "black==21.9b0"
 pre-commit = "pre-commit"
 
 [tool.wraptor.alias]
-run = "poetry run"
+clean-install = "rm -rf .venv && rm -rf .pytest_cache && ./pw poetry install --pw-clear-all"
 install = "poetry install"
 test = "poetry run pytest"
 check-pylint = "poetry run pylint pw tests"
-
-check = "&: test check-pylint"
-build = "&: install check"
-
-git-push = "!: git push"
-release = "&: build git-push"
+black = "black pw tests"
+check = "./pw test && ./pw check-pylint"
+build = "./pw install && ./pw check"
+commit = "./pw build && git commit"
