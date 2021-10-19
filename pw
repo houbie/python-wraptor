@@ -39,7 +39,7 @@ import sys
 from pathlib import Path
 from venv import EnvBuilder
 
-VERSION = "2.0.0"
+VERSION = "2.0.1"
 
 PYPROJECT = Path(__file__).with_name("pyproject.toml")
 VENVS_DIR = Path(os.environ.get("PYTHON_WRAPTOR_VENVS_DIR", Path.home().joinpath(".python-wraptor")), "venvs")
@@ -104,7 +104,7 @@ def ensure_tool(tool, cache_dir, upgrade=False, clear=False):
     shell_cmd = f"{pip} install "
     shell_cmd += pip_args
     if upgrade:
-        shell_cmd += "--upgrade "
+        shell_cmd += " --upgrade "
     subprocess.run(shell_cmd, shell=True, stdout=sys.stderr, check=True)
     return install_dir
 

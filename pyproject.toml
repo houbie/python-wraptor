@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "wraptor"
-version = "2.0.0"
+version = "2.0.1"
 description = "CLI wrapper for automatic installation of Python tooling"
 authors = ["Houbie <ivo@houbrechts-it.be>"]
 
