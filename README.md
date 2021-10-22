@@ -85,11 +85,18 @@ This location can be modified by setting the `PYTHON_WRAPTOR_VENVS_DIR` environm
 # Usage
 Add `path\to\pw` in front of the usual command line.
 
-Examples (on Windows you _may_ replace the forward slash with a backslash):
+Examples:
 ```shell
 ./pw poetry add -D pytest
 cd src
 ../pw black *.py
+```
+
+... or on Windows:
+```shell
+pw poetry add -D pytest
+cd src
+..\pw black *.py
 ```
 
 _pw_ specific options:
