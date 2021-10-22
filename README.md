@@ -27,13 +27,13 @@ Example:
 ```toml
 [tool.wraptor]
 # require a specific poetry version
-poetry = "poetry==1.1.7"
+poetry = "poetry==1.1.11"
 # use the latest black
 black = "black"
 # install flake8 in combination with plugins
 flake8 = """
 flake8
-flake8-bugbear
+flake8-bandit
 pep8-naming
 flake8-isort
 flake8-pytest-style"""
@@ -51,19 +51,31 @@ Example:
 run = "poetry run"
 test = "poetry run pytest"
 
-# tell pw that the isort binary is installed as part of flake8
-isort = "flake8:isort"
+# tell pw that the bandit binary is installed as part of flake8
+bandit = "flake8: bandit my_package tests -r"
 
-# simple shell commands
+# simple shell commands (string literals and variable substitutions can possibly expand to invalid shell commands)
 clean = "rm -f .coverage && rm -rf .pytest_cache"
 
 # when combining multiple wraptor aliases, prefix them with ./pw
+# this works on all OS and in sub folders because ./pw will be replaced with the correct script
 check-pylint = "./pw poetry run pylint && ./pw tests"
 
 # push to git if all checks pass
 release = "&: check push"
 ```
 
+Aliases can be invoked as is or with extra arguments:
+```shell
+./pw bandit
+
+./pw poetry run my-script
+# same as above, but using the run alias
+./pw run my-script
+```
+
+
+## Isolation
 Each tool gets installed in an isolated virtual environment.
 
 These are all located in the user's platform-specific home directory under _.python-wraptor/venvs_.
@@ -129,7 +141,5 @@ in your home directory or run `./pw --pw-clear-all`
 * [Facebook's PathPicker fork](https://github.com/houbie/PathPicker) (using Poetry)
 
 ## TODO
-* allow quoted strings in command arguments
-* display available tools and aliases as part of the help message
 * px script for Windows
 * init script that copies the pw scripts and initializes pyproject.toml + publish to PyPi
