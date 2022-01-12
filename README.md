@@ -1,16 +1,15 @@
 # Python wraptor
 
+**This project is deprecated in favor of [pyprojectx](https://github.com/houbie/pyprojectx)**
+
+
 CLI wrapper for automatic installation of Python tools:
 * Make it be a breeze for others to get started with your project or tutorial
 * Get reproducible builds by always using the correct versions of your build tools
 * Plays well with build tools like [Poetry](https://python-poetry.org/)
 
-![velociraptor](docs/velociraptor.png)
-
 ## Installation
 No tools to install (besides Python 3) 😍
-
-![Cast](./docs/poetry-build-cast.svg)
 
 Copy _pw_ and _pw.bat_ to your project's root directory and add it under version control.
 
